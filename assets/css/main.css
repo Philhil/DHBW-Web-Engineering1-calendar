@@ -1,0 +1,25 @@
+#content {
+    margin-left: 10%;
+    margin-right: 10%;
+    width: 80%;
+}
+
+.entry {
+    background-color: #222;
+    #width: 230px;
+    width: auto;
+    height: 150px;
+    color: #808080;
+    padding: 15px;
+    margin: 15px;
+    border-radius: 4px 4px 4px 4px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 12px #000000;
+}
+
+.entry button {
+    background-color: darkgray;
+    float: right;
+    border-radius: 28px;
+    margin-right: 10px;
+}

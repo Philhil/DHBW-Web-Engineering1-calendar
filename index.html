@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Calendar Project</title>
+    <link rel="icon" href="assets/image/calendar.ico">
+
+    <link rel="stylesheet" href="assets/css/main.css" type="text/css">
+    <link rel="stylesheet" href="assets/css/modal.css" type="text/css">
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<!-- Top Bar -->
+<button>New Entry</button>
+
+<!-- Content -->
+<div id="content">
+    <div class="entry">
+        <h3>Title:</h3>
+        <p>Von: 01.01.2000</p>
+        <p>Bis: 02.01.2000</p>
+        <button class="edit">Edit</button>
+        <button>Delete</button>
+    </div>
+</div>
+
+<!-- Pagination -->
+
+<!-- Modal -->
+<div id="calendarentry" class="modal">
+    <div class="modal-content">
+        <span class="close">x</span>
+        <form>
+            <p>Calender Detail edit</p>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>
+
+<script>
+    function loadEntrys () {
+        $.getJSON( "bla.json", function( data ) {
+            $.each( data, function( key, val ) {
+                $('#content').append("<li id='" + key + "'>" +
+                        '<div class="entry"> ' +
+                        '<h3>Title: ' + val.title + '</h3>' +
+                        '<p> Von: ' + val.datefrom + '</p>' +
+                        '<p>Bis: ' + + val.dateto + '</p>' +
+                        '<button>Edit</button>' +
+                        '<button>Delete</button>' +
+                        '</div>' +
+                        "</li>");
+            });
+        });
+    }
+
+    $( document ).ready(function() {
+        loadEntrys();
+
+        //MODAL
+        $('.edit').on('click', function () {
+            $('#calendarentry').show();
+        });
+
+        // When the user clicks on <span> (x), close the modal
+        $('.close').on('click', function() {
+            $('#calendarentry').hide();
+        });
+
+    });
+</script>
