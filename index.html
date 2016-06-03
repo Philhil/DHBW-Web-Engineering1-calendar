@@ -31,9 +31,29 @@
 <div id="calendarentry" class="modal">
     <div class="modal-content">
         <span class="close">x</span>
-        <form>
-            <p>Calender Detail edit</p>
-        </form>
+        <div>
+            <form>
+                <label for="modal_titel">Titel: *</label><input id="modal_titel" name="titel" type="text" size="30" maxlength="50" placeholder="Titel" tabindex="1" required="required"> <br>
+
+                <label for="modal_location">Location: </label><input id="modal_location" name="location" type="text" size="30" maxlength="50"><br>
+                <label for="modal_email">E-Mail: *</label><input id="modal_email" name="mail" type="email" size="30" maxlength="50" placeholder="E-Mail" tabindex="2" required="required"> <br>
+                <label for="modal_start">Start: *</label> <input id="modal_start" name="start" type="datetime" tabindex="3" required="required"> <br>
+                <label for="modal_end">End: *</label> <input id="modal_end" name="end" type="datetime" tabindex="4" required="required"> <br>
+
+                <select id="modal_status" name="status" size="1" tabindex="6">
+                    <option value="Free">Free</option>
+                    <option value="Busy">Busy</option>
+                    <option value="Tentative">Tentative</option>
+                </select>
+                <br>
+
+                <input id="modal_allday" name="allday" type="checkbox" value="allday" checked="checked" tabindex="7"> <label for="modal_allday">allday</label> <br>
+                <label for="modal_url">URL: </label><input id="modal_url" name="url" type="url" tabindex="5" size="30" maxlength="50" placeholder="https://yoururl.org"> <br>
+
+            </form>
+        </div>
+        <div class="map">
+        </div>
     </div>
 </div>
 
@@ -48,7 +68,7 @@
                         '<div class="entry"> ' +
                         '<h3>Title: ' + val.title + '</h3>' +
                         '<p> Von: ' + val.datefrom + '</p>' +
-                        '<p>Bis: ' + + val.dateto + '</p>' +
+                        '<p>Bis: ' + val.dateto + '</p>' +
                         '<button>Edit</button>' +
                         '<button>Delete</button>' +
                         '</div>' +
