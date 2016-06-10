@@ -23,3 +23,17 @@
     border-radius: 28px;
     margin-right: 10px;
 }
+
+#createentry {
+    position: fixed;
+    margin-top: 10px;
+}
+
+#editcategories {
+    position: fixed;
+    margin-top: 50px;
+}
+
+select {
+    margin-top: 20px;
+}

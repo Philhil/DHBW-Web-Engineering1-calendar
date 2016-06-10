@@ -8,49 +8,71 @@
     <link rel="stylesheet" href="assets/css/main.css" type="text/css">
     <link rel="stylesheet" href="assets/css/modal.css" type="text/css">
     <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+
+    <script type="text/javascript" src="assets/js/pnotify.custom.min.js"></script>
+    <link href="assets/css/pnotify.custom.min.css" media="all" rel="stylesheet" type="text/css" />
+
 </head>
 <body>
 
 <!-- Top Bar -->
-<button>New Entry</button>
+TODO:<br>
+<ul>
+    <li><s>Categories create, delete</s></li>
+    <li>Event: create, edit, delete</li>
+
+    <li>categorie event releation: create, remove</li>
+</ul>
+
+<button id="editcategories">Edit Categories</button>
+<button id="createentry">New Entry</button>
 
 <!-- Content -->
 <div id="content">
-    <div class="entry">
-        <h3>Title:</h3>
-        <p>Von: 01.01.2000</p>
-        <p>Bis: 02.01.2000</p>
-        <button class="edit">Edit</button>
-        <button>Delete</button>
-    </div>
 </div>
 
 <!-- Pagination -->
 
-<!-- Modal -->
+<!-- Modal calendarentry-->
 <div id="calendarentry" class="modal">
     <div class="modal-content">
         <span class="close">x</span>
         <div>
             <form>
-                <label for="modal_titel">Titel: *</label><input id="modal_titel" name="titel" type="text" size="30" maxlength="50" placeholder="Titel" tabindex="1" required="required"> <br>
+                <label for="modalevent_titel">Titel: *</label><input id="modalevent_titel" name="titel" type="text" size="30" maxlength="50" placeholder="Titel" tabindex="1" required="required"> <br>
 
-                <label for="modal_location">Location: </label><input id="modal_location" name="location" type="text" size="30" maxlength="50"><br>
-                <label for="modal_email">E-Mail: *</label><input id="modal_email" name="mail" type="email" size="30" maxlength="50" placeholder="E-Mail" tabindex="2" required="required"> <br>
-                <label for="modal_start">Start: *</label> <input id="modal_start" name="start" type="datetime" tabindex="3" required="required"> <br>
-                <label for="modal_end">End: *</label> <input id="modal_end" name="end" type="datetime" tabindex="4" required="required"> <br>
+                <label for="modalevent_location">Location: </label><input id="modalevent_location" name="location" type="text" size="30" maxlength="50"><br>
+                <label for="modalevent_email">Organizer: *</label><input id="modalevent_email" name="mail" type="email" size="30" maxlength="50" placeholder="E-Mail" tabindex="2" required="required"> <br>
+                <label for="modalevent_start">Start: *</label> <input id="modalevent_start" name="start" type="datetime" tabindex="3" required="required"> <br>
+                <label for="modalevent_end">End: *</label> <input id="modalevent_end" name="end" type="datetime" tabindex="4" required="required"> <br>
 
-                <select id="modal_status" name="status" size="1" tabindex="6">
+                <select id="modalevent_status" name="status" size="1" tabindex="6">
                     <option value="Free">Free</option>
                     <option value="Busy">Busy</option>
                     <option value="Tentative">Tentative</option>
                 </select>
                 <br>
 
-                <input id="modal_allday" name="allday" type="checkbox" value="allday" checked="checked" tabindex="7"> <label for="modal_allday">allday</label> <br>
-                <label for="modal_url">URL: </label><input id="modal_url" name="url" type="url" tabindex="5" size="30" maxlength="50" placeholder="https://yoururl.org"> <br>
+                <input id="modalevent_allday" name="allday" type="checkbox" value="allday" checked="checked" tabindex="7"> <label for="modalevent_allday">allday</label> <br>
+                <label for="modalevent_url">URL: </label><input id="modalevent_url" name="url" type="url" tabindex="5" size="30" maxlength="50" placeholder="https://yoururl.org"> <br>
 
+                <button id="modalevent_save">Save</button>
             </form>
+        </div>
+        <div class="map">
+        </div>
+    </div>
+</div>
+
+<!-- Modal categories-->
+<div id="modalcategories" class="modal">
+    <div class="modal-content">
+        <span class="close">x</span>
+        <div>
+            <label for="modalcat_new">New Category: </label><input id="modalcat_new" name="category" type="text" size="30" maxlength="30" placeholder="Categorie" tabindex="1"> <button id="modalcat_addcat">Add</button><br>
+            <select multiple="multiple" id="modalcat_categories" size="10">
+            </select>
+            <button id="modalcat_deletecat">Delete</button><br>
         </div>
         <div class="map">
         </div>
@@ -61,19 +83,38 @@
 </html>
 
 <script>
+    var user = "test";
     function loadEntrys () {
-        $.getJSON( "bla.json", function( data ) {
+        $.getJSON( "http://dhbw.ramonbisswanger.de/calendar/test/events", function( data ) {
+
+            //TODO create array to load data for update
             $.each( data, function( key, val ) {
-                $('#content').append("<li id='" + key + "'>" +
+
+                var dstart = new Date(val.start);
+                var dend = new Date(val.end);
+                var days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+
+                $('#content').append(
                         '<div class="entry"> ' +
                         '<h3>Title: ' + val.title + '</h3>' +
-                        '<p> Von: ' + val.datefrom + '</p>' +
-                        '<p>Bis: ' + val.dateto + '</p>' +
-                        '<button>Edit</button>' +
+                        '<p> Start: ' + days[dstart.getDay()] + ' ' + dstart.toLocaleDateString() + '</p>' +
+                        '<p>End: ' + days[dend.getDay()] + ' ' + dend.toLocaleDateString() + '</p>' +
+                        '<button class="edit" entryid="' + val.id + '">Edit</button>' +
                         '<button>Delete</button>' +
-                        '</div>' +
-                        "</li>");
+                        '</div>');
             });
+        }).error(function(event) {
+            data = $.parseJSON(event.responseText)
+            if(data != undefined && data.error == true) {
+                switch (data.code) {
+                    default:
+                        new PNotify({
+                            title: 'Error',
+                            text: data.description,
+                            type: 'error'
+                        });
+                }
+            }
         });
     }
 
@@ -81,13 +122,186 @@
         loadEntrys();
 
         //MODAL
-        $('.edit').on('click', function () {
+        $('#createentry').on('click', function () {
+            $('#modalevent_titel').val('');
+            $('#modalevent_location').val('');
+            $('#modalevent_email').val('');
+            $('#modalevent_start').val(new Date());
+            $('#modalevent_end').val(new Date());
+            //$('#modal_status');
+            $('#modalevent_allday').value = false;
+            $('#modalevent_url').val('');
+
+            $('#calendarentry').show();
+        });
+
+        $('.edit').on('click', function (event) {
+            //TODO: fill fields from entryid
+            console.log($(event.target).attr('entryid'));
             $('#calendarentry').show();
         });
 
         // When the user clicks on <span> (x), close the modal
-        $('.close').on('click', function() {
-            $('#calendarentry').hide();
+        $('.close').on('click', function(event) {
+            $(event.target.parentNode.parentNode).hide();
+        });
+
+        $('#editcategories').on('click', function (event) {
+
+            $('#modalcat_categories').empty()
+            //fill modal select
+            $.getJSON( "http://dhbw.ramonbisswanger.de/calendar/" + user + "/categories", function( data ) {
+                $.each( data, function( key, val ) {
+                    $('#modalcat_categories').append(
+                            '<option id="' + val.id + '"> ' +
+                            val.name +
+                            '</option>');
+                });
+
+                $('#modalcategories').show();
+            }).error(function(event) {
+                data = $.parseJSON(event.responseText)
+                console.log(data);
+                if(data != undefined && data.error == true) {
+                    switch (data.code) {
+                        default:
+                            new PNotify({
+                                title: 'Error',
+                                text: data.description,
+                                type: 'error'
+                            });
+                    }
+                }
+            });
+        });
+
+        //Add new Category
+        $('#modalcat_addcat').on('click', function (event) {
+
+            if($('#modalcat_new').val().length > 0) {
+                $.ajax({
+                    type: 'POST',
+                    url: "http://dhbw.ramonbisswanger.de/calendar/" + user + '/categories',
+                    data: JSON.stringify( {"name" : $('#modalcat_new').val()} )
+                }).done(function (data) {
+
+                    //add to categories select
+                    if (data.success == true) {
+                        $('#modalcat_categories').append(
+                                '<option id="' + data.id + '"> ' +
+                                $('#modalcat_new').val() +
+                                '</option>');
+
+                        new PNotify({
+                            title: 'Save',
+                            text: $('#modalcat_new').val() + " saved!",
+                            type: 'success'
+                        });
+
+                        $('#modalcat_new').val('');
+                    }
+
+                }).error(function(event) {
+                    data = $.parseJSON(event.responseText)
+                    if(data != undefined && data.error == true) {
+                        switch (data.code) {
+                            default:
+                                new PNotify({
+                                    title: 'Error',
+                                    text: data.description,
+                                    type: 'error'
+                                });
+                        }
+                    }
+                });
+            }
+        });
+        
+        //Delete Categorie
+        $('#modalcat_deletecat').on('click', function (event) {
+
+            $('#modalcat_categories :selected').each(function( key, val ) {
+                $.ajax({
+                    type: 'DELETE',
+                    url: "http://dhbw.ramonbisswanger.de/calendar/" + user + '/categories/'+ val.id
+                }).done(function (data) {
+
+                    //add to categories select
+                    if (data.success == true) {
+                        $("#modalcat_categories  option[id=" + val.id + "]").remove();
+
+                        new PNotify({
+                            title: 'Delete',
+                            text: val.text + " deleted!",
+                            type: 'success'
+                        });
+                    }
+
+                }).error(function(event) {
+                    data = $.parseJSON(event.responseText)
+                    if(data != undefined && data.error == true) {
+                        switch (data.code) {
+                            default:
+                                new PNotify({
+                                    title: 'Error',
+                                    text: data.description,
+                                    type: 'error'
+                                });
+                        }
+                    }
+                });
+
+            });
+        });
+
+        //Save new Event
+        $('#modalevent_save').on('click', function (event) {
+            /* <!--
+             {
+             "id": 1,
+             "title": " Christmas Feast",
+             "location": "Stuttgart",
+             "organizer": "dhbw@bisswanger.de",
+             "start": "2014-12-24T18:",
+             "end": "2014-12-24T23:",
+             "status": "Busy",
+             "allday": 0,
+             "webpage": "http://www.bisswanger.de/",
+             "imageurl": "http://bisswanger.de/logo.png",
+             "categories": [
+             {
+             "id": 1,
+             "name": "Private"
+             },
+             {
+             "id": 5,
+             "name": "DHBW"
+             }
+             ]
+
+             //format
+             title – Titel
+             location – Ort
+             organizer – Veranstalter
+             start – Startzeit im Format “YYYY-MM-DD’T’HH:MM” (für Ganztages-Einträge muss die Startzeit : sein)
+             end – Endzeit im Format “YYYY-MM-DD’T’HH:MM” (für Ganztages-Einträge muss die Endzeit 23:59 sein)
+             status – Verfügbarkeitsstatus
+             allday – 0/1 um Ganztages-Einträge zu definieren
+             webpage – Webseite mit weiteren Informationen
+
+
+             //
+             title – Pflichtfeld, max. 50 Zeichen
+             location – Optional, max. 50 Zeichen
+             organizer – Pflichtfeld, max. 50 Zeichen. Muss eine gültige E-Mail Adresse beinhalten
+             start – Pflichtfeld, siehe Format oben
+             end – Pflichtfeld, siehe Format oben
+             status – Pflichtfeld, gültige Werte: “Free” / “Busy” / “Tentative”
+             allday – Optional, gültige Werte: “0” / “1”. Wenn nicht definiert, wird der Wert „0“ verwendet
+             webpage – Optional, max. 1 Zeichen
+
+             -->
+             */
         });
 
     });
