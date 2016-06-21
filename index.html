@@ -19,7 +19,7 @@
 TODO:<br>
 <ul>
     <li><s>Categories create, delete</s></li>
-    <li>Event: create, edit, delete</li>
+    <li>Event: <s>create</s>, edit, <s>delete</s>(delete relations)</li>
 
     <li>categorie event releation: create, remove</li>
 </ul>
@@ -43,10 +43,10 @@ TODO:<br>
 
                 <label for="modalevent_location">Location: </label><input id="modalevent_location" name="location" type="text" size="30" maxlength="50"><br>
                 <label for="modalevent_email">Organizer: *</label><input id="modalevent_email" name="mail" type="email" size="30" maxlength="50" placeholder="E-Mail" tabindex="2" required="required"> <br>
-                <label for="modalevent_start">Start: *</label> <input id="modalevent_start" name="start" type="datetime" tabindex="3" required="required"> <br>
-                <label for="modalevent_end">End: *</label> <input id="modalevent_end" name="end" type="datetime" tabindex="4" required="required"> <br>
+                <label for="modalevent_start">Start: *</label> <input id="modalevent_start" name="start" type="datetime-local" tabindex="3" required="required"> <br>
+                <label for="modalevent_end">End: *</label> <input id="modalevent_end" name="end" type="datetime-local" tabindex="4" required="required"> <br>
 
-                <select id="modalevent_status" name="status" size="1" tabindex="6">
+                <label for="modalevent_status">Status: </label><select id="modalevent_status" name="status" size="1" tabindex="6">
                     <option value="Free">Free</option>
                     <option value="Busy">Busy</option>
                     <option value="Tentative">Tentative</option>
@@ -54,9 +54,9 @@ TODO:<br>
                 <br>
 
                 <input id="modalevent_allday" name="allday" type="checkbox" value="allday" checked="checked" tabindex="7"> <label for="modalevent_allday">allday</label> <br>
-                <label for="modalevent_url">URL: </label><input id="modalevent_url" name="url" type="url" tabindex="5" size="30" maxlength="50" placeholder="https://yoururl.org"> <br>
+                <label for="modalevent_url">URL: </label><input id="modalevent_url" name="url" type="url" tabindex="5" size="30" maxlength="100" placeholder="https://yoururl.org"> <br>
 
-                <button id="modalevent_save">Save</button>
+                <button id="modalevent_save" type="button">Save</button>
             </form>
         </div>
         <div class="map">
@@ -70,7 +70,7 @@ TODO:<br>
         <span class="close">x</span>
         <div>
             <label for="modalcat_new">New Category: </label><input id="modalcat_new" name="category" type="text" size="30" maxlength="30" placeholder="Categorie" tabindex="1"> <button id="modalcat_addcat">Add</button><br>
-            <select multiple="multiple" id="modalcat_categories" size="10">
+            <label for="modalcat_categories"></label><select multiple="multiple" id="modalcat_categories" size="10">
             </select>
             <button id="modalcat_deletecat">Delete</button><br>
         </div>
@@ -95,16 +95,56 @@ TODO:<br>
                 var days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 
                 $('#content').append(
-                        '<div class="entry"> ' +
+                        '<div class="entry entry'+ val.id + '"> ' +
                         '<h3>Title: ' + val.title + '</h3>' +
                         '<p> Start: ' + days[dstart.getDay()] + ' ' + dstart.toLocaleDateString() + '</p>' +
                         '<p>End: ' + days[dend.getDay()] + ' ' + dend.toLocaleDateString() + '</p>' +
                         '<button class="edit" entryid="' + val.id + '">Edit</button>' +
-                        '<button>Delete</button>' +
+                        '<button class="deletecat" entryid="' + val.id + '">Delete</button>' +
                         '</div>');
             });
+
+            $('.edit').on('click', function (event) {
+                //TODO: fill fields from entryid
+                console.log($(event.target).attr('entryid'));
+                $('#calendarentry').show();
+            });
+
+            $('.deletecat').on('click', function (event) {
+                eventid = $(event.target).attr('entryid');
+
+                $.ajax({
+                    type: 'DELETE',
+                    url: "http://dhbw.ramonbisswanger.de/calendar/" + user + '/events/'+ eventid
+                }).done(function (data) {
+
+                    if (data.success == true) {
+                        $(".entry"+$(event.target).attr('entryid')).remove();
+
+                        new PNotify({
+                            title: 'Delete',
+                            text: "deleted!",
+                            type: 'success'
+                        });
+                    }
+
+                }).error(function(event) {
+                    data = $.parseJSON(event.responseText);
+                    if(data != undefined && data.error == true) {
+                        switch (data.code) {
+                            default:
+                                new PNotify({
+                                    title: 'Error',
+                                    text: data.description,
+                                    type: 'error'
+                                });
+                        }
+                    }
+                });
+            });
+
         }).error(function(event) {
-            data = $.parseJSON(event.responseText)
+            data = $.parseJSON(event.responseText);
             if(data != undefined && data.error == true) {
                 switch (data.code) {
                     default:
@@ -118,9 +158,15 @@ TODO:<br>
         });
     }
 
+
+    //http://stackoverflow.com/questions/2507030/email-validation-using-jquery
+    function isEmail(email) {
+        var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+        return regex.test(email);
+    }
+
     $( document ).ready(function() {
         loadEntrys();
-
         //MODAL
         $('#createentry').on('click', function () {
             $('#modalevent_titel').val('');
@@ -135,20 +181,14 @@ TODO:<br>
             $('#calendarentry').show();
         });
 
-        $('.edit').on('click', function (event) {
-            //TODO: fill fields from entryid
-            console.log($(event.target).attr('entryid'));
-            $('#calendarentry').show();
-        });
-
         // When the user clicks on <span> (x), close the modal
         $('.close').on('click', function(event) {
             $(event.target.parentNode.parentNode).hide();
         });
 
-        $('#editcategories').on('click', function (event) {
+        $('#editcategories').on('click', function () {
 
-            $('#modalcat_categories').empty()
+            $('#modalcat_categories').empty();
             //fill modal select
             $.getJSON( "http://dhbw.ramonbisswanger.de/calendar/" + user + "/categories", function( data ) {
                 $.each( data, function( key, val ) {
@@ -160,8 +200,7 @@ TODO:<br>
 
                 $('#modalcategories').show();
             }).error(function(event) {
-                data = $.parseJSON(event.responseText)
-                console.log(data);
+                data = $.parseJSON(event.responseText);
                 if(data != undefined && data.error == true) {
                     switch (data.code) {
                         default:
@@ -176,33 +215,35 @@ TODO:<br>
         });
 
         //Add new Category
-        $('#modalcat_addcat').on('click', function (event) {
+        $('#modalcat_addcat').on('click', function () {
 
-            if($('#modalcat_new').val().length > 0) {
+            var catnew = $('#modalcat_new');
+
+            if(catnew.val().length > 0) {
                 $.ajax({
                     type: 'POST',
                     url: "http://dhbw.ramonbisswanger.de/calendar/" + user + '/categories',
-                    data: JSON.stringify( {"name" : $('#modalcat_new').val()} )
+                    data: JSON.stringify( {"name" : catnew.val()} )
                 }).done(function (data) {
 
                     //add to categories select
                     if (data.success == true) {
                         $('#modalcat_categories').append(
                                 '<option id="' + data.id + '"> ' +
-                                $('#modalcat_new').val() +
+                                catnew.val() +
                                 '</option>');
 
                         new PNotify({
                             title: 'Save',
-                            text: $('#modalcat_new').val() + " saved!",
+                            text: catnew.val() + " saved!",
                             type: 'success'
                         });
 
-                        $('#modalcat_new').val('');
+                        catnew.val('');
                     }
 
                 }).error(function(event) {
-                    data = $.parseJSON(event.responseText)
+                    data = $.parseJSON(event.responseText);
                     if(data != undefined && data.error == true) {
                         switch (data.code) {
                             default:
@@ -218,7 +259,7 @@ TODO:<br>
         });
         
         //Delete Categorie
-        $('#modalcat_deletecat').on('click', function (event) {
+        $('#modalcat_deletecat').on('click', function () {
 
             $('#modalcat_categories :selected').each(function( key, val ) {
                 $.ajax({
@@ -238,7 +279,7 @@ TODO:<br>
                     }
 
                 }).error(function(event) {
-                    data = $.parseJSON(event.responseText)
+                    data = $.parseJSON(event.responseText);
                     if(data != undefined && data.error == true) {
                         switch (data.code) {
                             default:
@@ -256,52 +297,61 @@ TODO:<br>
 
         //Save new Event
         $('#modalevent_save').on('click', function (event) {
-            /* <!--
-             {
-             "id": 1,
-             "title": " Christmas Feast",
-             "location": "Stuttgart",
-             "organizer": "dhbw@bisswanger.de",
-             "start": "2014-12-24T18:",
-             "end": "2014-12-24T23:",
-             "status": "Busy",
-             "allday": 0,
-             "webpage": "http://www.bisswanger.de/",
-             "imageurl": "http://bisswanger.de/logo.png",
-             "categories": [
-             {
-             "id": 1,
-             "name": "Private"
-             },
-             {
-             "id": 5,
-             "name": "DHBW"
-             }
-             ]
 
-             //format
-             title – Titel
-             location – Ort
-             organizer – Veranstalter
-             start – Startzeit im Format “YYYY-MM-DD’T’HH:MM” (für Ganztages-Einträge muss die Startzeit : sein)
-             end – Endzeit im Format “YYYY-MM-DD’T’HH:MM” (für Ganztages-Einträge muss die Endzeit 23:59 sein)
-             status – Verfügbarkeitsstatus
-             allday – 0/1 um Ganztages-Einträge zu definieren
-             webpage – Webseite mit weiteren Informationen
+            //TODO: drigger field validation
 
+            if (!($('#modalevent_status').val() == "Free" ||
+                    $('#modalevent_status').val() == "Busy" ||
+                    $('#modalevent_status').val() == "Tentative" )) {
+                new PNotify({
+                    title: 'Error',
+                    text: "Status is not valid!",
+                    type: 'error'
+                });
+            }
+            else {
+                $.ajax({
+                    type: 'POST',
+                    url: "http://dhbw.ramonbisswanger.de/calendar/" + user + '/events',
+                    data: JSON.stringify({
+                        "title": $('#modalevent_titel').val(),
+                        "location": $('#modalevent_location').val(),
+                        "organizer": $('#modalevent_email').val(),
+                        "start": $('#modalevent_start').val(),
+                        "end": $('#modalevent_end').val(),
+                        "status": $('#modalevent_status').val(),
+                        "allday": $('#modalevent_allday').checked,
+                        "webpage": $('#modalevent_url').val()
+                    })
+                }).done(function (data) {
 
-             //
-             title – Pflichtfeld, max. 50 Zeichen
-             location – Optional, max. 50 Zeichen
-             organizer – Pflichtfeld, max. 50 Zeichen. Muss eine gültige E-Mail Adresse beinhalten
-             start – Pflichtfeld, siehe Format oben
-             end – Pflichtfeld, siehe Format oben
-             status – Pflichtfeld, gültige Werte: “Free” / “Busy” / “Tentative”
-             allday – Optional, gültige Werte: “0” / “1”. Wenn nicht definiert, wird der Wert „0“ verwendet
-             webpage – Optional, max. 1 Zeichen
+                    if (data.success == true) {
+                        $('#content').append(
+                                '<div class="entry entry'+ data.id + '"> ' +
+                                '<h3>Title: ' + $('#modalevent_titel').val() + '</h3>' +
+                                '<p> Start: ' + $('#modalevent_start').val() + '</p>' +
+                                '<p>End: ' + $('#modalevent_end').val() + '</p>' +
+                                '<button class="edit" entryid="' + data.id + '">Edit</button>' +
+                                '<button class="deletecat" entryid="' + data.id + '">Delete</button>' +
+                                '</div>');
 
-             -->
-             */
+                        $(event.target.parentNode.parentNode.parentNode.parentNode).hide();
+                    }
+
+                }).error(function (event) {
+                    data = $.parseJSON(event.responseText);
+                    if (data != undefined && data.error == true) {
+                        switch (data.code) {
+                            default:
+                                new PNotify({
+                                    title: 'Error',
+                                    text: data.description,
+                                    type: 'error'
+                                });
+                        }
+                    }
+                });
+            }
         });
 
     });

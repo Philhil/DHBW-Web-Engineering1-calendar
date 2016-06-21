@@ -37,3 +37,10 @@
 select {
     margin-top: 20px;
 }
+
+
+@media print {
+    button {
+        visibility: hidden;
+    }
+}
