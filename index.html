@@ -7,10 +7,11 @@
 
     <link rel="stylesheet" href="assets/css/main.css" type="text/css">
     <link rel="stylesheet" href="assets/css/modal.css" type="text/css">
-    <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"
+            integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
 
     <script type="text/javascript" src="assets/js/pnotify.custom.min.js"></script>
-    <link href="assets/css/pnotify.custom.min.css" media="all" rel="stylesheet" type="text/css" />
+    <link href="assets/css/pnotify.custom.min.css" media="all" rel="stylesheet" type="text/css"/>
 
 </head>
 <body>
@@ -19,7 +20,7 @@
 TODO:<br>
 <ul>
     <li><s>Categories create, delete</s></li>
-    <li>Event: <s>create</s>, edit, <s>delete</s>(delete relations)</li>
+    <li>Event: <s>create, edit, delete</s>(delete relations)</li>
 
     <li>categorie event releation: create, remove</li>
 </ul>
@@ -38,23 +39,36 @@ TODO:<br>
     <div class="modal-content">
         <span class="close">x</span>
         <div>
-            <form>
-                <label for="modalevent_titel">Titel: *</label><input id="modalevent_titel" name="titel" type="text" size="30" maxlength="50" placeholder="Titel" tabindex="1" required="required"> <br>
+            <form>p>
+                <input type="hidden" id="modalevent_id" value="">
+                <label for="modalevent_titel">Titel: *</label><input id="modalevent_titel" name="titel" type="text"
+                                                                     size="30" maxlength="50" placeholder="Titel"
+                                                                     tabindex="1" required="required"> <br>
 
-                <label for="modalevent_location">Location: </label><input id="modalevent_location" name="location" type="text" size="30" maxlength="50"><br>
-                <label for="modalevent_email">Organizer: *</label><input id="modalevent_email" name="mail" type="email" size="30" maxlength="50" placeholder="E-Mail" tabindex="2" required="required"> <br>
-                <label for="modalevent_start">Start: *</label> <input id="modalevent_start" name="start" type="datetime-local" tabindex="3" required="required"> <br>
-                <label for="modalevent_end">End: *</label> <input id="modalevent_end" name="end" type="datetime-local" tabindex="4" required="required"> <br>
+                <label for="modalevent_location">Location: </label><input id="modalevent_location" name="location"
+                                                                          type="text" size="30" maxlength="50"><br>
+                <label for="modalevent_email">Organizer: *</label><input id="modalevent_email" name="mail" type="email"
+                                                                         size="30" maxlength="50" placeholder="E-Mail"
+                                                                         tabindex="2" required="required"> <br>
+                <label for="modalevent_start">Start: *</label> <input id="modalevent_start" name="start"
+                                                                      type="datetime-local" tabindex="3"
+                                                                      required="required"> <br>
+                <label for="modalevent_end">End: *</label> <input id="modalevent_end" name="end" type="datetime-local"
+                                                                  tabindex="4" required="required"> <br>
 
-                <label for="modalevent_status">Status: </label><select id="modalevent_status" name="status" size="1" tabindex="6">
+                <label for="modalevent_status">Status: </label>
+                <select id="modalevent_status" name="status" size="1" tabindex="6">
                     <option value="Free">Free</option>
                     <option value="Busy">Busy</option>
                     <option value="Tentative">Tentative</option>
                 </select>
                 <br>
 
-                <input id="modalevent_allday" name="allday" type="checkbox" value="allday" checked="checked" tabindex="7"> <label for="modalevent_allday">allday</label> <br>
-                <label for="modalevent_url">URL: </label><input id="modalevent_url" name="url" type="url" tabindex="5" size="30" maxlength="100" placeholder="https://yoururl.org"> <br>
+                <input id="modalevent_allday" name="allday" type="checkbox" value="allday" checked="checked"
+                       tabindex="7"> <label for="modalevent_allday">allday</label> <br>
+                <label for="modalevent_url">URL: </label><input id="modalevent_url" name="url" type="url" tabindex="5"
+                                                                size="30" maxlength="100"
+                                                                placeholder="https://yoururl.org"> <br>
 
                 <button id="modalevent_save" type="button">Save</button>
             </form>
@@ -69,10 +83,15 @@ TODO:<br>
     <div class="modal-content">
         <span class="close">x</span>
         <div>
-            <label for="modalcat_new">New Category: </label><input id="modalcat_new" name="category" type="text" size="30" maxlength="30" placeholder="Categorie" tabindex="1"> <button id="modalcat_addcat">Add</button><br>
+            <label for="modalcat_new">New Category: </label><input id="modalcat_new" name="category" type="text"
+                                                                   size="30" maxlength="30" placeholder="Categorie"
+                                                                   tabindex="1">
+            <button id="modalcat_addcat">Add</button>
+            <br>
             <label for="modalcat_categories"></label><select multiple="multiple" id="modalcat_categories" size="10">
-            </select>
-            <button id="modalcat_deletecat">Delete</button><br>
+        </select>
+            <button id="modalcat_deletecat">Delete</button>
+            <br>
         </div>
         <div class="map">
         </div>
@@ -84,68 +103,85 @@ TODO:<br>
 
 <script>
     var user = "test";
-    function loadEntrys () {
-        $.getJSON( "http://dhbw.ramonbisswanger.de/calendar/test/events", function( data ) {
+    var events = {};
 
-            //TODO create array to load data for update
-            $.each( data, function( key, val ) {
+    function seteventbuttonListeners() {
+        $('.edit').on('click', function (event) {
+            entryid = $(event.target).attr('entryid');
+
+            $('#modalevent_id').val(entryid);
+            $('#modalevent_titel').val(events[entryid].title);
+            $('#modalevent_location').val(events[entryid].location);
+            $('#modalevent_email').val(events[entryid].organizer);
+            $('#modalevent_start').val(events[entryid].start);
+            $('#modalevent_end').val(events[entryid].end);
+            $('#modalevent_status').val(events[entryid].status);
+            $('#modalevent_allday').value = events[entryid.allday];
+            $('#modalevent_url').val(events[entryid].webpage);
+
+            $('#calendarentry').show();
+        });
+
+        $('.deletecat').on('click', function (event) {
+            eventid = $(event.target).attr('entryid');
+
+            $.ajax({
+                type: 'DELETE',
+                url: "http://dhbw.ramonbisswanger.de/calendar/" + user + '/events/' + eventid
+            }).done(function (data) {
+
+                if (data.success == true) {
+                    delete events[$(event.target).attr('entryid')];
+                    $(".entry" + $(event.target).attr('entryid')).remove();
+
+                    new PNotify({
+                        title: 'Delete',
+                        text: "deleted!",
+                        type: 'success'
+                    });
+                }
+
+            }).error(function (event) {
+                data = $.parseJSON(event.responseText);
+                if (data != undefined && data.error == true) {
+                    switch (data.code) {
+                        default:
+                            new PNotify({
+                                title: 'Error',
+                                text: data.description,
+                                type: 'error'
+                            });
+                    }
+                }
+            });
+        });
+    }
+
+    function loadEntrys() {
+        $.getJSON("http://dhbw.ramonbisswanger.de/calendar/test/events", function (data) {
+            $.each(data, function (key, val) {
+
+                events[val.id] = val;
 
                 var dstart = new Date(val.start);
                 var dend = new Date(val.end);
-                var days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+                var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
                 $('#content').append(
-                        '<div class="entry entry'+ val.id + '"> ' +
+                        '<div class="entry entry' + val.id + '"> ' +
                         '<h3>Title: ' + val.title + '</h3>' +
-                        '<p> Start: ' + days[dstart.getDay()] + ' ' + dstart.toLocaleDateString() + '</p>' +
+                        '<p>Start: ' + days[dstart.getDay()] + ' ' + dstart.toLocaleDateString() + '</p>' +
                         '<p>End: ' + days[dend.getDay()] + ' ' + dend.toLocaleDateString() + '</p>' +
                         '<button class="edit" entryid="' + val.id + '">Edit</button>' +
                         '<button class="deletecat" entryid="' + val.id + '">Delete</button>' +
                         '</div>');
             });
 
-            $('.edit').on('click', function (event) {
-                //TODO: fill fields from entryid
-                console.log($(event.target).attr('entryid'));
-                $('#calendarentry').show();
-            });
+            seteventbuttonListeners();
 
-            $('.deletecat').on('click', function (event) {
-                eventid = $(event.target).attr('entryid');
-
-                $.ajax({
-                    type: 'DELETE',
-                    url: "http://dhbw.ramonbisswanger.de/calendar/" + user + '/events/'+ eventid
-                }).done(function (data) {
-
-                    if (data.success == true) {
-                        $(".entry"+$(event.target).attr('entryid')).remove();
-
-                        new PNotify({
-                            title: 'Delete',
-                            text: "deleted!",
-                            type: 'success'
-                        });
-                    }
-
-                }).error(function(event) {
-                    data = $.parseJSON(event.responseText);
-                    if(data != undefined && data.error == true) {
-                        switch (data.code) {
-                            default:
-                                new PNotify({
-                                    title: 'Error',
-                                    text: data.description,
-                                    type: 'error'
-                                });
-                        }
-                    }
-                });
-            });
-
-        }).error(function(event) {
+        }).error(function (event) {
             data = $.parseJSON(event.responseText);
-            if(data != undefined && data.error == true) {
+            if (data != undefined && data.error == true) {
                 switch (data.code) {
                     default:
                         new PNotify({
@@ -158,14 +194,7 @@ TODO:<br>
         });
     }
 
-
-    //http://stackoverflow.com/questions/2507030/email-validation-using-jquery
-    function isEmail(email) {
-        var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-        return regex.test(email);
-    }
-
-    $( document ).ready(function() {
+    $(document).ready(function () {
         loadEntrys();
         //MODAL
         $('#createentry').on('click', function () {
@@ -182,7 +211,7 @@ TODO:<br>
         });
 
         // When the user clicks on <span> (x), close the modal
-        $('.close').on('click', function(event) {
+        $('.close').on('click', function (event) {
             $(event.target.parentNode.parentNode).hide();
         });
 
@@ -190,8 +219,8 @@ TODO:<br>
 
             $('#modalcat_categories').empty();
             //fill modal select
-            $.getJSON( "http://dhbw.ramonbisswanger.de/calendar/" + user + "/categories", function( data ) {
-                $.each( data, function( key, val ) {
+            $.getJSON("http://dhbw.ramonbisswanger.de/calendar/" + user + "/categories", function (data) {
+                $.each(data, function (key, val) {
                     $('#modalcat_categories').append(
                             '<option id="' + val.id + '"> ' +
                             val.name +
@@ -199,9 +228,9 @@ TODO:<br>
                 });
 
                 $('#modalcategories').show();
-            }).error(function(event) {
+            }).error(function (event) {
                 data = $.parseJSON(event.responseText);
-                if(data != undefined && data.error == true) {
+                if (data != undefined && data.error == true) {
                     switch (data.code) {
                         default:
                             new PNotify({
@@ -219,11 +248,11 @@ TODO:<br>
 
             var catnew = $('#modalcat_new');
 
-            if(catnew.val().length > 0) {
+            if (catnew.val().length > 0) {
                 $.ajax({
                     type: 'POST',
                     url: "http://dhbw.ramonbisswanger.de/calendar/" + user + '/categories',
-                    data: JSON.stringify( {"name" : catnew.val()} )
+                    data: JSON.stringify({"name": catnew.val()})
                 }).done(function (data) {
 
                     //add to categories select
@@ -242,9 +271,9 @@ TODO:<br>
                         catnew.val('');
                     }
 
-                }).error(function(event) {
+                }).error(function (event) {
                     data = $.parseJSON(event.responseText);
-                    if(data != undefined && data.error == true) {
+                    if (data != undefined && data.error == true) {
                         switch (data.code) {
                             default:
                                 new PNotify({
@@ -257,14 +286,14 @@ TODO:<br>
                 });
             }
         });
-        
+
         //Delete Categorie
         $('#modalcat_deletecat').on('click', function () {
 
-            $('#modalcat_categories :selected').each(function( key, val ) {
+            $('#modalcat_categories :selected').each(function (key, val) {
                 $.ajax({
                     type: 'DELETE',
-                    url: "http://dhbw.ramonbisswanger.de/calendar/" + user + '/categories/'+ val.id
+                    url: "http://dhbw.ramonbisswanger.de/calendar/" + user + '/categories/' + val.id
                 }).done(function (data) {
 
                     //add to categories select
@@ -278,9 +307,9 @@ TODO:<br>
                         });
                     }
 
-                }).error(function(event) {
+                }).error(function (event) {
                     data = $.parseJSON(event.responseText);
-                    if(data != undefined && data.error == true) {
+                    if (data != undefined && data.error == true) {
                         switch (data.code) {
                             default:
                                 new PNotify({
@@ -310,47 +339,140 @@ TODO:<br>
                 });
             }
             else {
-                $.ajax({
-                    type: 'POST',
-                    url: "http://dhbw.ramonbisswanger.de/calendar/" + user + '/events',
-                    data: JSON.stringify({
-                        "title": $('#modalevent_titel').val(),
-                        "location": $('#modalevent_location').val(),
-                        "organizer": $('#modalevent_email').val(),
-                        "start": $('#modalevent_start').val(),
-                        "end": $('#modalevent_end').val(),
-                        "status": $('#modalevent_status').val(),
-                        "allday": $('#modalevent_allday').checked,
-                        "webpage": $('#modalevent_url').val()
-                    })
-                }).done(function (data) {
+                entryid = $('#modalevent_id').val();
+                $('#modalevent_id').val("");
 
-                    if (data.success == true) {
-                        $('#content').append(
-                                '<div class="entry entry'+ data.id + '"> ' +
-                                '<h3>Title: ' + $('#modalevent_titel').val() + '</h3>' +
-                                '<p> Start: ' + $('#modalevent_start').val() + '</p>' +
-                                '<p>End: ' + $('#modalevent_end').val() + '</p>' +
-                                '<button class="edit" entryid="' + data.id + '">Edit</button>' +
-                                '<button class="deletecat" entryid="' + data.id + '">Delete</button>' +
-                                '</div>');
 
-                        $(event.target.parentNode.parentNode.parentNode.parentNode).hide();
-                    }
+                if (entryid != undefined || entryid != "") {
+                    //update
+                    $.ajax({
+                        type: 'PUT',
+                        url: "http://dhbw.ramonbisswanger.de/calendar/" + user + '/events/' + entryid,
+                        data: JSON.stringify({
+                            "title": $('#modalevent_titel').val(),
+                            "location": $('#modalevent_location').val(),
+                            "organizer": $('#modalevent_email').val(),
+                            "start": $('#modalevent_start').val(),
+                            "end": $('#modalevent_end').val(),
+                            "status": $('#modalevent_status').val(),
+                            "allday": $('#modalevent_allday').checked,
+                            "webpage": $('#modalevent_url').val()
+                        })
+                    }).done(function (data) {
 
-                }).error(function (event) {
-                    data = $.parseJSON(event.responseText);
-                    if (data != undefined && data.error == true) {
-                        switch (data.code) {
-                            default:
-                                new PNotify({
-                                    title: 'Error',
-                                    text: data.description,
-                                    type: 'error'
-                                });
+                        if (data.success == true) {
+
+                            //update global event array
+                            events[data.id].title = $('#modalevent_titel').val();
+                            events[data.id].location = $('#modalevent_location').val();
+                            events[data.id].organizer = $('#modalevent_email').val();
+                            events[data.id].start = $('#modalevent_start').val();
+                            events[data.id].end = $('#modalevent_end').val();
+                            events[data.id].status = $('#modalevent_status').val();
+                            events[data.id].allday = $('#modalevent_allday').value;
+                            events[data.id].webpage = $('#modalevent_url').val();
+
+
+                            var dstart = new Date($('#modalevent_start').val());
+                            var dend = new Date($('#modalevent_end').val());
+                            var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+                            $(".entry" + data.id).remove();
+                            $('#content').append(
+                                    '<div class="entry entry' + data.id + '"> ' +
+                                    '<h3>' + $('#modalevent_titel').val() + '</h3>' +
+                                    '<p>Start: ' + days[dstart.getDay()] + ' ' + dstart.toLocaleDateString() + '</p>' +
+                                    '<p>End: ' + days[dend.getDay()] + ' ' + dend.toLocaleDateString() + '</p>' +
+                                    '<button class="edit" entryid="' + data.id + '">Edit</button>' +
+                                    '<button class="deletecat" entryid="' + data.id + '">Delete</button>' +
+                                    '</div>');
+
+                            seteventbuttonListeners();
+
+                            $(event.target.parentNode.parentNode.parentNode.parentNode).hide();
                         }
-                    }
-                });
+
+                    }).error(function (event) {
+                        data = $.parseJSON(event.responseText);
+                        if (data != undefined && data.error == true) {
+                            switch (data.code) {
+                                default:
+                                    new PNotify({
+                                        title: 'Error',
+                                        text: data.description,
+                                        type: 'error'
+                                    });
+                            }
+                        }
+                    });
+                }
+                else {
+                    //new
+                    $.ajax({
+                        type: 'POST',
+                        url: "http://dhbw.ramonbisswanger.de/calendar/" + user + '/events',
+                        data: JSON.stringify({
+                            "title": $('#modalevent_titel').val(),
+                            "location": $('#modalevent_location').val(),
+                            "organizer": $('#modalevent_email').val(),
+                            "start": $('#modalevent_start').val(),
+                            "end": $('#modalevent_end').val(),
+                            "status": $('#modalevent_status').val(),
+                            "allday": $('#modalevent_allday').checked,
+                            "webpage": $('#modalevent_url').val()
+                        })
+                    }).done(function (data) {
+
+                        if (data.success == true) {
+
+                            //update global event array
+                            if (events[data.id] == undefined) {
+                                events[data.id] = {};
+                            } else {
+                                $(".entry" + data.id).remove();
+                            }
+
+                            events[data.id].title = $('#modalevent_titel').val();
+                            events[data.id].location = $('#modalevent_location').val();
+                            events[data.id].organizer = $('#modalevent_email').val();
+                            events[data.id].start = $('#modalevent_start').val();
+                            events[data.id].end = $('#modalevent_end').val();
+                            events[data.id].status = $('#modalevent_status').val();
+                            events[data.id].allday = $('#modalevent_allday').value;
+                            events[data.id].webpage = $('#modalevent_url').val();
+
+
+                            var dstart = new Date($('#modalevent_start').val());
+                            var dend = new Date($('#modalevent_end').val());
+                            var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+                            $('#content').append(
+                                    '<div class="entry entry' + data.id + '"> ' +
+                                    '<h3>' + $('#modalevent_titel').val() + '</h3>' +
+                                    '<p>Start: ' + days[dstart.getDay()] + ' ' + dstart.toLocaleDateString() + '</p>' +
+                                    '<p>End: ' + days[dend.getDay()] + ' ' + dend.toLocaleDateString() + '</p>' +
+                                    '<button class="edit" entryid="' + data.id + '">Edit</button>' +
+                                    '<button class="deletecat" entryid="' + data.id + '">Delete</button>' +
+                                    '</div>');
+
+                            seteventbuttonListeners();
+                            $(event.target.parentNode.parentNode.parentNode.parentNode).hide();
+                        }
+
+                    }).error(function (event) {
+                        data = $.parseJSON(event.responseText);
+                        if (data != undefined && data.error == true) {
+                            switch (data.code) {
+                                default:
+                                    new PNotify({
+                                        title: 'Error',
+                                        text: data.description,
+                                        type: 'error'
+                                    });
+                            }
+                        }
+                    });
+                }
             }
         });
 

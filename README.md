@@ -7,9 +7,9 @@ This is a Project for DHBW Stuttgart Web Engineering 1
 AJAX Web Service + Dokumentation wird bereitgestellt
 
 - [x] Kalendereinträge anzeigen (Listenansicht)
-- [ ] Kalendereintrag erzeugen
-- [ ] Kalendereintrag bearbeiten
-- [ ] Kalendereintrag löschen
+- [x] Kalendereintrag erzeugen
+- [x] Kalendereintrag bearbeiten
+- [x] Kalendereintrag löschen
 - [ ] Bildverwaltung für Kalendereintrag (hinzufügen/anzeigen/löschen)
 - [x] Kategorie erzeugen
 - [x] Kategorie löschen
