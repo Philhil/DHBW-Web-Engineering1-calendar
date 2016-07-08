@@ -39,3 +39,8 @@
     width: auto;
     float: right;
 }
+
+#modalevent_categories {
+    float: right;
+    margin-right: 30px;
+}

@@ -13,5 +13,5 @@ AJAX Web Service + Dokumentation wird bereitgestellt
 - [ ] Bildverwaltung für Kalendereintrag (hinzufügen/anzeigen/löschen)
 - [x] Kategorie erzeugen
 - [x] Kategorie löschen
-- [ ] Kategorie - Kalendereintrag zuordnung erzeugen
-- [ ] Kategorie - Kalendereintrag zuordnung löschen
+- [x] Kategorie - Kalendereintrag zuordnung erzeugen
+- [x] Kategorie - Kalendereintrag zuordnung löschen

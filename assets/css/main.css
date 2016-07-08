@@ -15,6 +15,11 @@
     border-radius: 4px 4px 4px 4px;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 0 12px #000000;
+    text-overflow: ellipsis;
+}
+
+.entry:nth-of-type(2n) {
+    background-color: rgb(53, 53, 53);
 }
 
 .entry button {
