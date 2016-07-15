@@ -10,8 +10,10 @@ AJAX Web Service + Dokumentation wird bereitgestellt
 - [x] Kalendereintrag erzeugen
 - [x] Kalendereintrag bearbeiten
 - [x] Kalendereintrag löschen
-- [ ] Bildverwaltung für Kalendereintrag (hinzufügen/anzeigen/löschen)
+- [x] Bildverwaltung für Kalendereintrag (hinzufügen/anzeigen/löschen)
 - [x] Kategorie erzeugen
 - [x] Kategorie löschen
 - [x] Kategorie - Kalendereintrag zuordnung erzeugen
 - [x] Kategorie - Kalendereintrag zuordnung löschen
+- [x] Benutzer wechseln
+- [ ] Zeige OSM Ausschnitt von Terminlocation

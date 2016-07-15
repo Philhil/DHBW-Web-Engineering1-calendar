@@ -6,7 +6,6 @@
 
 .entry {
     background-color: #222;
-    #width: 230px;
     width: auto;
     height: 150px;
     color: #808080;
@@ -19,7 +18,7 @@
 }
 
 .entry:nth-of-type(2n) {
-    background-color: rgb(53, 53, 53);
+    background-color: rgb(57, 57, 57);
 }
 
 .entry button {
@@ -29,14 +28,44 @@
     margin-right: 10px;
 }
 
-#createentry {
-    position: fixed;
-    margin-top: 10px;
+a:link {
+    text-decoration: none;
+    color: #808080;
 }
 
-#editcategories {
+a:visited {
+    color: #808080;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #696b5a;
+    text-decoration: underline;
+}
+
+a:active {
+    text-decoration: underline;
+}
+
+.imgprev {
+    max-height: 140px;
+    max-width: calc(100%/3);
+    float: right;
+
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    -webkit-transition: .3s ease-in-out;
+    transition: .3s ease-in-out;
+}
+
+.imgprev:hover {
+    -webkit-transform: scale(1.2);
+    transform: scale(1.2);
+}
+
+#menu {
     position: fixed;
-    margin-top: 50px;
+    margin-top: 10px;
 }
 
 select {

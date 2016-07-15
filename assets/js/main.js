@@ -27,10 +27,6 @@ function seteventbuttonListeners() {
         $.each(events[entryid].categories, function (key, val) {
             cat = $("#modalevent_categories  option[id=" + val.id + "]");
 
-            console.log(cat);
-            console.log("select " +val.id);
-
-
             //is categorie is missing? (was created after get the side and before open the modal) -> add to list
             if(cat == undefined) {
                 $('#modalevent_categories').append('<option id="' + val.id + '"> ' + val.name + '</option>');
@@ -38,9 +34,17 @@ function seteventbuttonListeners() {
             }
 
             cat.prop('selected', true);
-            //document.getElementById().setAttribute("class", "democlass");
             selectedCategories.push(String(val.id));
         });
+
+        $('#modalevent_imageprev').hide();
+        $('#modalevent_deleteimg').hide();
+
+        if(events[entryid].imageurl) {
+            $('#modalevent_imageprev').attr("src",events[entryid].imageurl);
+            $('#modalevent_imageprev').show();
+            $('#modalevent_deleteimg').show();
+        }
 
         $('#calendarentry').show();
     });
@@ -133,6 +137,9 @@ function saveCategories(eventid)
 }
 
 function loadEntrys() {
+    events = {};
+    $('#content').empty();
+
     $.getJSON("http://dhbw.ramonbisswanger.de/calendar/" + user + "/events", function (data) {
         $.each(data, function (key, val) {
 
@@ -144,9 +151,12 @@ function loadEntrys() {
 
             $('#content').append(
                 '<div class="entry entry' + val.id + '"> ' +
-                '<h3>Title: ' + val.title + '</h3>' +
-                '<p>Start: ' + days[dstart.getDay()] + ' ' + dstart.toLocaleDateString() + '</p>' +
-                '<p>End: ' + days[dend.getDay()] + ' ' + dend.toLocaleDateString() + '</p>' +
+                    '<div style="float: left; width: 80%">'+
+                        '<img class="imgprev" alt="" src="' + val.imageurl + '">' +
+                        '<h3> <a href="'+val.webpage+'">Title: ' + val.title + '</a></h3>' +
+                        '<p>Start: ' + days[dstart.getDay()] + ' ' + dstart.toLocaleDateString() + '</p>' +
+                        '<p>End: ' + days[dend.getDay()] + ' ' + dend.toLocaleDateString() + '</p>' +
+                    '</div>'+
                 '<button class="edit" entryid="' + val.id + '">Edit</button>' +
                 '<button class="deletecat" entryid="' + val.id + '">Delete</button>' +
                 '</div>');
@@ -192,10 +202,57 @@ function loadEntrys() {
     });
 }
 
+function uploadImage(file, entryid) {
+    if(file) {
+        var reader = new FileReader();
+
+        reader.addEventListener("load", function () {
+            if (entryid != undefined && entryid.length  > 0) {
+                $.ajax({
+                    type: 'POST',
+                    url: "http://dhbw.ramonbisswanger.de/calendar/" + user + '/images/' + entryid,
+                    data: JSON.stringify({ "data": reader.result }),
+                    contentType: "application/json",
+                    cache: false,
+                    //processData: false,
+                    success: function (data) {
+                        new PNotify({
+                            title: 'Save',
+                            text: file.name + " saved!",
+                            type: 'success'
+                        });
+                    },
+                    error: function (data) {
+                        data = $.parseJSON(event.responseText);
+                        if (data != undefined && data.error == true) {
+                            switch (data.code) {
+                                default:
+                                    new PNotify({
+                                        title: 'Error',
+                                        text: data.description,
+                                        type: 'error'
+                                    });
+                            }
+                        }
+                    }
+                });
+            }
+        }, false);
+
+        reader.readAsDataURL(file);
+    }
+}
+
 $(document).ready(function () {
     loadEntrys();
+
+    $('#changeuser').on('click', function() {
+        user = $('#changeuser_input').val();
+        loadEntrys();
+    });
+
     //MODAL
-    $('#createentry').on('click', function () {
+    $('#createentry').on('click', function() {
         $('#modalevent_titel').val('');
         $('#modalevent_location').val('');
         $('#modalevent_email').val('');
@@ -204,6 +261,11 @@ $(document).ready(function () {
         //$('#modal_status');
         $('#modalevent_allday').value = false;
         $('#modalevent_url').val('');
+        $('#modalevent_id').val('');
+
+        $('#modalevent_imageprev').attr("src", "");
+        $('#modalevent_imageprev').hide();
+        $('#modalevent_deleteimg').hide();
 
         $('#calendarentry').show();
     });
@@ -211,6 +273,7 @@ $(document).ready(function () {
     // When the user clicks on <span> (x), close the modal
     $('.close').on('click', function (event) {
         $(event.target.parentNode.parentNode).hide();
+        $('#modalevent_id').val("");
     });
 
     $('#editcategories').on('click', function () {
@@ -325,8 +388,6 @@ $(document).ready(function () {
     //Save/edit Event
     $('#modalevent_save').on('click', function (event) {
 
-        //TODO: drigger field validation
-
         if (!($('#modalevent_status').val() == "Free" ||
             $('#modalevent_status').val() == "Busy" ||
             $('#modalevent_status').val() == "Tentative" )) {
@@ -344,7 +405,6 @@ $(document).ready(function () {
             if (entryid != undefined && entryid.length  > 0) {
                 //update
 
-                //TODO check if categories changed to events array...
                 $.ajax({
                     type: 'PUT',
                     url: "http://dhbw.ramonbisswanger.de/calendar/" + user + '/events/' + entryid,
@@ -410,7 +470,6 @@ $(document).ready(function () {
             }
             else {
                 //new
-
                 $.ajax({
                     type: 'POST',
                     url: "http://dhbw.ramonbisswanger.de/calendar/" + user + '/events',
@@ -434,6 +493,10 @@ $(document).ready(function () {
                         } else {
                             $(".entry" + data.id).remove();
                         }
+
+                        //Upload image
+                        file = $('#imageupload input').prop('files')[0];
+                        uploadImage(file, data.id);
 
                         //save Event Cat relation
                         saveCategories(data.id);
@@ -480,6 +543,90 @@ $(document).ready(function () {
                 });
             }
         }
+    });
+
+
+    $('#modalevent_upload').on('change', function(){
+
+        file = $('#imageupload input').prop('files')[0];
+
+        if(file) {
+            var reader = new FileReader();
+
+            reader.addEventListener("load", function () {
+                entryid = $('#modalevent_id').val();
+
+                if (entryid != undefined && entryid.length  > 0) {
+                    //not a new entry
+                    $.ajax({
+                        type: 'POST',
+                        url: "http://dhbw.ramonbisswanger.de/calendar/" + user + '/images/' + entryid,
+                        data: JSON.stringify({ "data": reader.result }),
+                        contentType: "application/json",
+                        cache: false,
+                        //processData: false,
+                        success: function (data) {
+                            new PNotify({
+                                title: 'Save',
+                                text: file.name + " saved!",
+                                type: 'success'
+                            });
+                        },
+                        error: function (data) {
+                            data = $.parseJSON(event.responseText);
+                            if (data != undefined && data.error == true) {
+                                switch (data.code) {
+                                    default:
+                                        new PNotify({
+                                            title: 'Error',
+                                            text: data.description,
+                                            type: 'error'
+                                        });
+                                }
+                            }
+                        }
+                    });
+                }
+
+                $('#modalevent_imageprev').attr("src",reader.result);
+                $('#modalevent_imageprev').show();
+
+            }, false);
+
+            reader.readAsDataURL(file);
+        }
+    });
+
+    $('#modalevent_deleteimg').on('click', function (event) {
+
+        $.ajax({
+            type: 'DELETE',
+            url: "http://dhbw.ramonbisswanger.de/calendar/" + user + '/images/' + $('#modalevent_id').val()
+        }).done(function (data) {
+
+            if (data.success == true) {
+                $('#modalevent_imageprev').hide();
+                $('#modalevent_deleteimg').hide();
+                new PNotify({
+                    title: 'Delete',
+                    text: "deleted!",
+                    type: 'success'
+                });
+            }
+
+        }).error(function (event) {
+            data = $.parseJSON(event.responseText);
+            if (data != undefined && data.error == true) {
+                switch (data.code) {
+                    default:
+                        new PNotify({
+                            title: 'Error',
+                            text: data.description,
+                            type: 'error'
+                        });
+                }
+            }
+        });
     });
 
 });

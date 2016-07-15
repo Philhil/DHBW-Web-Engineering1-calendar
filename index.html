@@ -22,11 +22,21 @@ TODO:<br>
     <li><s>Categories create, delete</s></li>
     <li>Event: <s>create, edit, delete</s></li>
     <li><s>categorie event releation: create, remove</s></li>
-    <li>pictures: upload, delete</li>
+    <li><s>pictures: upload, delete</s></li>
+    <li>location based service kalendereintrag mit osm</li>
+    <li>change user</li>
 </ul>
 
-<button id="editcategories">Edit Categories</button>
-<button id="createentry">New Entry</button>
+<div id="menu">
+    <button id="createentry">New Entry</button>
+    <br><br>
+    <button id="editcategories">Edit Categories</button>
+    <br><br>
+    <input id="changeuser_input" name="changeuser" type="text"
+           size="20" maxlength="20" placeholder="Username" value="test">
+    <br>
+    <button id="changeuser">Change User</button>
+</div>
 
 <!-- Content -->
 <div id="content">
@@ -43,6 +53,17 @@ TODO:<br>
                 <input type="hidden" id="modalevent_id" value="">
 
                 <label for="modalevent_categories">Categories: </label> <select multiple="multiple" id="modalevent_categories" size="10"></select>
+
+                <div id="modalevent_image_div">
+                    <img id="modalevent_imageprev" alt="" src="">
+                    <div id="imageupload">
+                        <p> Wählen Sie eine Textdatei (*.png, *.jpg) von Ihrem Rechner aus
+                        <br>
+                        <input id="modalevent_upload" name="image" type="file" size="500" accept="image/png,image/jpeg,image/jpg"> </p>
+                    </div>
+                    <button id="modalevent_deleteimg" type="button">delete</button>
+                </div>
+
 
                 <label for="modalevent_titel">Titel: *</label><input id="modalevent_titel" name="titel" type="text"
                                                                      size="30" maxlength="50" placeholder="Titel"

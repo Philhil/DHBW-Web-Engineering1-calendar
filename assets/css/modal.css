@@ -43,4 +43,15 @@
 #modalevent_categories {
     float: right;
     margin-right: 30px;
+    min-width: 100px;
+}
+
+#modalevent_image_div {
+    float: right;
+    margin-right: 30px;
+}
+
+#modalevent_imageprev {
+    max-height: 140px;
+    max-width: calc(100%/3);
 }
