@@ -13,27 +13,21 @@
     <script type="text/javascript" src="assets/js/pnotify.custom.min.js"></script>
     <link href="assets/css/pnotify.custom.min.css" media="all" rel="stylesheet" type="text/css"/>
 
+    <script type="text/javascript" src="assets/js/main.js"></script>
+
+    <link rel="stylesheet" href="https://npmcdn.com/leaflet@0.7.7/dist/leaflet.css" />
+    <script src="https://npmcdn.com/leaflet@0.7.7/dist/leaflet.js"></script>
 </head>
 <body>
 
-<!-- Top Bar -->
-TODO:<br>
-<ul>
-    <li><s>Categories create, delete</s></li>
-    <li>Event: <s>create, edit, delete</s></li>
-    <li><s>categorie event releation: create, remove</s></li>
-    <li><s>pictures: upload, delete</s></li>
-    <li>location based service kalendereintrag mit osm</li>
-    <li>change user</li>
-</ul>
-
+<!-- Menu Bar -->
 <div id="menu">
     <button id="createentry">New Entry</button>
     <br><br>
     <button id="editcategories">Edit Categories</button>
     <br><br>
     <input id="changeuser_input" name="changeuser" type="text"
-           size="20" maxlength="20" placeholder="Username" value="test">
+           size="10" maxlength="10" placeholder="Username" value="test">
     <br>
     <button id="changeuser">Change User</button>
 </div>
@@ -42,35 +36,36 @@ TODO:<br>
 <div id="content">
 </div>
 
-<!-- Pagination -->
-
 <!-- Modal calendarentry-->
 <div id="calendarentry" class="modal">
     <div class="modal-content">
         <span class="close">x</span>
         <div>
-            <form>
+            <img>
                 <input type="hidden" id="modalevent_id" value="">
 
                 <label for="modalevent_categories">Categories: </label> <select multiple="multiple" id="modalevent_categories" size="10"></select>
 
                 <div id="modalevent_image_div">
-                    <img id="modalevent_imageprev" alt="" src="">
+                    <img id="modalevent_imageprev" alt="" src="#">
                     <div id="imageupload">
                         <p> Wählen Sie eine Textdatei (*.png, *.jpg) von Ihrem Rechner aus
                         <br>
-                        <input id="modalevent_upload" name="image" type="file" size="500" accept="image/png,image/jpeg,image/jpg"> </p>
+                        <input id="modalevent_upload" name="image" type="file" size="25" accept="image/png,image/jpeg,image/jpg"> </p>
                     </div>
                     <button id="modalevent_deleteimg" type="button">delete</button>
                 </div>
 
+                <div id="modalevent_map">
+
+                </div>
 
                 <label for="modalevent_titel">Titel: *</label><input id="modalevent_titel" name="titel" type="text"
                                                                      size="30" maxlength="50" placeholder="Titel"
                                                                      tabindex="1" required="required"> <br>
 
                 <label for="modalevent_location">Location: </label><input id="modalevent_location" name="location"
-                                                                          type="text" size="30" maxlength="50"><br>
+                                                                          type="text" size="30" maxlength="50"><button id="getlocationbtn" style="border: 0; background: transparent"><img src="assets/image/location.png" height="10px" width="10px" alt=""></button><br>
                 <label for="modalevent_email">Organizer: *</label><input id="modalevent_email" name="mail" type="email"
                                                                          size="30" maxlength="50" placeholder="E-Mail"
                                                                          tabindex="2" required="required"> <br>
@@ -126,7 +121,3 @@ TODO:<br>
 </body>
 </html>
 
-<script>
-var user = "test";
-</script>
-<script type="text/javascript" src="assets/js/main.js"></script>

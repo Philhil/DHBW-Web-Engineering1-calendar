@@ -55,3 +55,10 @@
     max-height: 140px;
     max-width: calc(100%/3);
 }
+
+#modalevent_map {
+    float: right;
+    margin-right: 30px;
+    min-width: 300px;
+    min-height: 200px;
+}

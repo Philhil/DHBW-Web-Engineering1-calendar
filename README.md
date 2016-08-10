@@ -16,4 +16,4 @@ AJAX Web Service + Dokumentation wird bereitgestellt
 - [x] Kategorie - Kalendereintrag zuordnung erzeugen
 - [x] Kategorie - Kalendereintrag zuordnung löschen
 - [x] Benutzer wechseln
-- [ ] Zeige OSM Ausschnitt von Terminlocation
+- [x] Benutzer Standort für Eintrag

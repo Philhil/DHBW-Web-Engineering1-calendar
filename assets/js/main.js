@@ -4,6 +4,8 @@
 
 var events = {};
 var selectedCategories = [];
+var user = "test";
+var map = null;
 
 function seteventbuttonListeners() {
     $('.edit').on('click', function (event) {
@@ -243,6 +245,44 @@ function uploadImage(file, entryid) {
     }
 }
 
+function showPosition(position) {
+    $('#modalevent_location').val(position.coords.latitude + "," + position.coords.longitude);
+
+    $('#modalevent_map').show("fast");
+    setmap(position.coords.latitude, position.coords.latitude);
+}
+
+function showLocationError(error) {
+    var errorstr = "An unknown error occurred.";
+    switch(error.code) {
+        case error.PERMISSION_DENIED:
+            errorstr = "User denied the request for Geolocation."
+            break;
+        case error.POSITION_UNAVAILABLE:
+            errorstr = "Location information is unavailable."
+            break;
+        case error.TIMEOUT:
+            errorstr = "The request to get user location timed out."
+            break;
+    }
+
+    new PNotify({
+        title: 'Error',
+        text: errorstr,
+        type: 'error'
+    });
+}
+
+function setmap(lat, long) {
+    map = L.map('modalevent_map').setView([lat, long], 18);
+
+    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    L.marker([lat, long]).addTo(map);
+}
+
 $(document).ready(function () {
     loadEntrys();
 
@@ -263,7 +303,7 @@ $(document).ready(function () {
         $('#modalevent_url').val('');
         $('#modalevent_id').val('');
 
-        $('#modalevent_imageprev').attr("src", "");
+        $('#modalevent_imageprev').attr("src", "#");
         $('#modalevent_imageprev').hide();
         $('#modalevent_deleteimg').hide();
 
@@ -627,6 +667,19 @@ $(document).ready(function () {
                 }
             }
         });
+    });
+    
+    $('#getlocationbtn').on('click', function(){
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition, showLocationError);
+        } else {
+            new PNotify({
+                title: 'Error',
+                text: "Geolocation is not supported by this browser.",
+                type: 'error'
+            });
+        }
     });
 
 });
