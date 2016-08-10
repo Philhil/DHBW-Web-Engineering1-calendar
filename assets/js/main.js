@@ -249,7 +249,7 @@ function showPosition(position) {
     $('#modalevent_location').val(position.coords.latitude + "," + position.coords.longitude);
 
     $('#modalevent_map').show("fast");
-    setmap(position.coords.latitude, position.coords.latitude);
+    setmap(position.coords.latitude, position.coords.longitude);
 }
 
 function showLocationError(error) {
@@ -274,11 +274,15 @@ function showLocationError(error) {
 }
 
 function setmap(lat, long) {
-    map = L.map('modalevent_map').setView([lat, long], 18);
-
-    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+    var osmtile = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
+    });
+
+    map = L.map('modalevent_map', {
+        center: [lat, long],
+        zoom: 16,
+        layers: [osmtile]
+    });
 
     L.marker([lat, long]).addTo(map);
 }
