@@ -51,7 +51,7 @@ function seteventbuttonListeners() {
         $('#calendarentry').show();
     });
 
-    $('.deletecat').on('click', function (event) {
+    $('.deleteevent').on('click', function (event) {
         eventid = $(event.target).attr('entryid');
 
         $.ajax({
@@ -160,7 +160,7 @@ function loadEntrys() {
                         '<p>End: ' + days[dend.getDay()] + ' ' + dend.toLocaleDateString() + '</p>' +
                     '</div>'+
                 '<button class="edit" entryid="' + val.id + '">Edit</button>' +
-                '<button class="deletecat" entryid="' + val.id + '">Delete</button>' +
+                '<button class="deleteevent" entryid="' + val.id + '">Delete</button>' +
                 '</div>');
         });
 
@@ -490,12 +490,12 @@ $(document).ready(function () {
                             '<p>Start: ' + days[dstart.getDay()] + ' ' + dstart.toLocaleDateString() + '</p>' +
                             '<p>End: ' + days[dend.getDay()] + ' ' + dend.toLocaleDateString() + '</p>' +
                             '<button class="edit" entryid="' + data.id + '">Edit</button>' +
-                            '<button class="deletecat" entryid="' + data.id + '">Delete</button>' +
+                            '<button class="deleteevent" entryid="' + data.id + '">Delete</button>' +
                             '</div>');
 
                         seteventbuttonListeners();
 
-                        $(event.target.parentNode.parentNode.parentNode.parentNode).hide();
+                        $('#calendarentry').hide();
                     }
 
                 }).error(function (event) {
@@ -565,11 +565,12 @@ $(document).ready(function () {
                             '<p>Start: ' + days[dstart.getDay()] + ' ' + dstart.toLocaleDateString() + '</p>' +
                             '<p>End: ' + days[dend.getDay()] + ' ' + dend.toLocaleDateString() + '</p>' +
                             '<button class="edit" entryid="' + data.id + '">Edit</button>' +
-                            '<button class="deletecat" entryid="' + data.id + '">Delete</button>' +
+                            '<button class="deleteevent" entryid="' + data.id + '">Delete</button>' +
                             '</div>');
 
                         seteventbuttonListeners();
-                        $(event.target.parentNode.parentNode.parentNode.parentNode).hide();
+
+                        $('#calendarentry').hide();
                     }
 
                 }).error(function (event) {
